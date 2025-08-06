@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signal Saham - Analisis Kuantitatif Trading Saham</title>
+    <meta name="description"
+        content="Platform analisis kuantitatif terdepan untuk trading saham dengan success rate tinggi">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#008080', // Teal
+                        'secondary': '#f59e0b',
+                        'success': '#10b981',
+                        'danger': '#ef4444',
+                        'primary-dark': '#006877', // Varian Teal lebih gelap
+                        'secondary-dark': '#fde047',
+                        'dark-slate-800': '#2F4F4F', // Dark Slate
+                        'dark-slate-900': '#0D3B3E', // Dark Slate lebih gelap
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'space': ['Space Grotesk', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #008080 0%, #006877 100%);
+        }
+
+        .market-gradient {
+            background: linear-gradient(135deg, #008080 0%, #006877 50%, #10b981 100%);
+        }
+
+        .dark .market-gradient {
+            background: linear-gradient(135deg, #0D3B3E 0%, #006877 100%);
+        }
+
+        .hero-bg {
+            background-image: url('assets/img/header.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .hero-overlay {
+            background: linear-gradient(135deg, rgba(0, 128, 128, 0.9) 0%, rgba(0, 104, 119, 0.8) 50%, rgba(16, 185, 129, 0.7) 100%);
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .animate-slide-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .animate-slide-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .chart-pattern {
+            background-image: linear-gradient(90deg, rgba(0, 128, 128, 0.1) 1px, transparent 1px), linear-gradient(180deg, rgba(0, 128, 128, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .dark .chart-pattern {
+            background-image: linear-gradient(90deg, rgba(0, 104, 119, 0.05) 1px, transparent 1px), linear-gradient(180deg, rgba(0, 104, 119, 0.05) 1px, transparent 1px);
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, #008080, #006877);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dark .gradient-text {
+            background: linear-gradient(45deg, #006877, #2F4F4F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-switch {
+            display: inline-block;
+            height: 34px;
+            position: relative;
+            width: 60px;
+        }
+
+        .theme-switch input {
+            display: none;
+        }
+
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+        }
+
+        .slider:before {
+            background-color: #fff;
+            bottom: 4px;
+            content: "";
+            height: 26px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 26px;
+        }
+
+        input:checked+.slider {
+            background-color: #008080;
+            /* Warna teal saat aktif */
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .screenshot-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dark .screenshot-card {
+            background: #0D3B3E;
+            /* Dark Slate */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .screenshot-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .dark .screenshot-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .whatsapp-btn {
+            background: #25d366;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .whatsapp-btn:hover {
+            background: #128c7e;
+            transform: translateY(-2px);
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+        }
+
+        .testimonial-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .feature-bg {
+            background-image: url('assets/img/feature.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .about-img {
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="overflow-x-hidden bg-gray-50 font-inter transition-colors duration-500">
+    <nav
+        class="bg-white shadow-lg sticky top-0 z-50 dark:bg-dark-slate-800 dark:shadow-2xl dark:shadow-gray-900 transition-colors duration-500">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1
+                            class="text-xl font-bold text-gray-800 dark:text-white font-space transition-colors duration-500">
+                            Signalsaham</h1>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-500">Trading
+                            Platform</p>
+                    </div>
+                </div>
+
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="#home"
+                        class="text-gray-700 hover:text-teal-500 dark:text-gray-300 dark:hover:text-teal-400 transition-colors duration-500">Beranda</a>
+                    <a href="#features"
+                        class="text-gray-700 hover:text-teal-500 dark:text-gray-300 dark:hover:text-teal-400 transition-colors duration-500">Fitur</a>
+                    <a href="#how-it-works"
+                        class="text-gray-700 hover:text-teal-500 dark:text-gray-300 dark:hover:text-teal-400 transition-colors duration-500">Cara
+                        Kerja</a>
+                    <a href="#testimonials"
+                        class="text-gray-700 hover:text-teal-500 dark:text-gray-300 dark:hover:text-teal-400 transition-colors duration-500">Testimoni</a>
+                    <a href="#contact"
+                        class="text-gray-700 hover:text-teal-500 dark:text-gray-300 dark:hover:text-teal-400 transition-colors duration-500">Kontak</a>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <div class="theme-switch-wrapper hidden md:block">
+                        <label class="theme-switch" for="checkbox">
+                            <input type="checkbox" id="checkbox" />
+                            <div class="slider round"></div>
+                        </label>
+                    </div>
+                    <a href="https://mtp.signalsaham.com"
+                        class="hidden md:inline-flex items-center px-4 py-2 border border-teal-500 text-teal-500 rounded-lg hover:bg-teal-500 hover:text-white dark:border-teal-400 dark:text-teal-400 dark:hover:bg-teal-400 dark:hover:text-white transition-colors duration-500">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Login
+                    </a>
+                    <a href="https://mtp.signalsaham.com/trial.php"
+                        class="bg-yellow-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 transition font-medium text-sm md:text-base">
+                        <i class="fas fa-rocket mr-2"></i>
+                        Daftar
+                    </a>
+                </div>
+
+                <button class="lg:hidden text-gray-700 dark:text-white" id="mobile-menu-btn">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="mobile-menu"
+        class="lg:hidden fixed inset-x-0 top-[64px] w-full h-screen bg-white shadow-lg border-t hidden dark:bg-dark-slate-900 dark:border-dark-slate-800 transition-colors duration-500 z-40">
+        <div class="p-4 space-y-4">
+            <a href="#home"
+                class="block text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-dark transition">Beranda</a>
+            <a href="#features"
+                class="block text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-dark transition">Fitur</a>
+            <a href="#how-it-works"
+                class="block text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-dark transition">Cara
+                Kerja</a>
+            <a href="#testimonials"
+                class="block text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-dark transition">Testimoni</a>
+            <a href="#contact"
+                class="block text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-dark transition">Kontak</a>
+            <div class="pt-4 border-t border-gray-200 dark:border-dark-slate-800">
+                <a href="https://mtp.signalsaham.com"
+                    class="block text-center border border-primary text-primary py-2 px-4 rounded-lg mb-2 hover:bg-primary hover:text-white dark:border-primary-dark dark:text-primary-dark dark:hover:bg-primary-dark dark:hover:text-white transition">Login</a>
+                <a href="https://mtp.signalsaham.com/trial.php"
+                    class="block text-center bg-secondary text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition">Daftar
+                    Sekarang</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="hero-bg text-white py-20 relative overflow-hidden" id="home">
+        <div class="hero-overlay absolute inset-0"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center max-w-4xl mx-auto">
+                <div class="animate-slide-up">
+                    <h1 class="text-5xl lg:text-7xl font-bold font-space leading-tight mb-8">
+                        Analisis Kuantitatif<br>
+                        Trading Saham
+                    </h1>
+
+                    <p class="text-xl lg:text-2xl text-teal-100 mb-12 leading-relaxed max-w-3xl mx-auto">
+                        Platform analisis kuantitatif yang memudahkan Anda memilih saham berdasarkan perhitungan
+                        matematika,
+                        statistik, dan pola yang terbukti memberikan profit terbaik dengan success rate tinggi.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+                        <a href="https://mtp.signalsaham.com/trial.php"
+                            class="bg-secondary text-white px-8 py-4 rounded-xl font-semibold hover:bg-secondary-dark transition transform hover:scale-105 text-center">
+                            <i class="fas fa-rocket mr-2"></i>
+                            Daftar Sekarang
+                        </a>
+                        <a href="#features"
+                            class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-primary transition text-center">
+                            <i class="fas fa-play mr-2"></i>
+                            Pelajari Lebih
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div class="text-center floating">
+                            <div class="text-4xl font-bold text-secondary mb-2 font-space">30+</div>
+                            <div class="text-sm text-teal-100">Metode Analisis</div>
+                        </div>
+                        <div class="text-center floating" style="animation-delay: 0.5s;">
+                            <div class="text-4xl font-bold text-secondary mb-2 font-space">900+</div>
+                            <div class="text-sm text-teal-100">Emiten Tersedia</div>
+                        </div>
+                        <div class="text-center floating" style="animation-delay: 1s;">
+                            <div class="text-4xl font-bold text-secondary mb-2 font-space">1200+</div>
+                            <div class="text-sm text-teal-100">User Ritel</div>
+                        </div>
+                        <div class="text-center floating" style="animation-delay: 1.5s;">
+                            <div class="text-4xl font-bold text-secondary mb-2 font-space">4</div>
+                            <div class="text-sm text-teal-100">User Corporation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="hidden sm:block absolute top-20 right-20 w-46 h-64 bg-white bg-opacity-10 rounded-full blur-3xl">
+            </div>
+            <div
+                class="hidden sm:block absolute bottom-20 left-20 w-48 h-48 bg-yellow-400 bg-opacity-20 rounded-full blur-3xl">
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-white dark:bg-dark-slate-900 transition-colors duration-500" id="features">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2
+                    class="text-4xl lg:text-5xl font-bold font-space text-gray-800 dark:text-white transition-colors duration-500 mb-6">
+                    Mengapa Memilih Signal Saham?
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 transition-colors duration-500 max-w-3xl mx-auto">
+                    STOP trading tanpa analisis! Gunakan Signal Saham untuk memilih saham dengan fundamental baik dan
+                    berpotensi profit 1-2% per hari.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+
+                <div
+                    class="bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl p-8 border border-teal-200 animate-slide-up hover:transform hover:scale-105 transition duration-300 dark:from-dark-slate-800 dark:to-dark-slate-700 dark:border-dark-slate-700">
+                    <div class="w-20 h-20 bg-primary rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-line text-white text-3xl"></i>
+                    </div>
+                    <h3
+                        class="text-2xl font-bold text-gray-800 dark:text-white font-space mb-4 transition-colors duration-500">
+                        Platform Trading Terdepan
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400 transition-colors duration-500 leading-relaxed">
+                        Signal Saham menggunakan teknologi analisis kuantitatif terdepan untuk memberikan rekomendasi
+                        trading yang akurat dan menguntungkan. Platform kami telah terbukti memberikan hasil yang
+                        optimal
+                        dengan success rate di atas 80%.
+                    </p>
+                    <ul class="space-y-2 mt-4">
+                        <li class="flex items-center text-gray-700 dark:text-gray-300">
+                            <i class="fas fa-check-circle text-primary mr-3"></i>
+                            <span>Analisis berdasarkan data historis</span>
+                        </li>
+                        <li class="flex items-center text-gray-700 dark:text-gray-300">
+                            <i class="fas fa-check-circle text-primary mr-3"></i>
+                            <span>Success rate di atas 80%</span>
+                        </li>
+                        <li class="flex items-center text-gray-700 dark:text-gray-300">
+                            <i class="fas fa-check-circle text-primary mr-3"></i>
+                            <span>Interface yang mudah digunakan</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div
+                    class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-8 border border-green-200 animate-slide-up hover:transform hover:scale-105 transition duration-300 dark:from-dark-slate-800 dark:to-dark-slate-700 dark:border-dark-slate-700">
+                    <div class="w-20 h-20 bg-success rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-database text-white text-3xl"></i>
+                    </div>
+                    <h3
+                        class="text-2xl font-bold text-gray-800 dark:text-white font-space mb-4 transition-colors duration-500">
+                        Data Lengkap & Akurat
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400 transition-colors duration-500 leading-relaxed">
+                        Data backtest yang komprehensif membantu Anda menganalisis saham pilihan dengan akurasi tinggi,
+                        meningkatkan conviction dalam setiap keputusan trading.
+                    </p>
+                </div>
+
+                <div
+                    class="bg-gradient-to-br from-secondary-50 to-secondary-100 rounded-2xl p-8 border border-secondary-200 animate-slide-up hover:transform hover:scale-105 transition duration-300 dark:from-dark-slate-800 dark:to-dark-slate-700 dark:border-dark-slate-700">
+                    <div class="w-20 h-20 bg-secondary rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-trophy text-white text-3xl"></i>
+                    </div>
+                    <h3
+                        class="text-2xl font-bold text-gray-800 dark:text-white font-space mb-4 transition-colors duration-500">
+                        Success Rate Tinggi
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400 transition-colors duration-500 leading-relaxed">
+                        Dapatkan rekomendasi saham dengan success rate di atas 80% berdasarkan analisis kuantitatif yang
+                        telah terbukti memberikan hasil optimal.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gray-50 dark:bg-dark-slate-900 transition-colors duration-500" id="how-it-works">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2
+                    class="text-4xl lg:text-5xl font-bold font-space text-gray-800 dark:text-white transition-colors duration-500 mb-6">
+                    Cara Kerja Signal Saham</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 transition-colors duration-500 max-w-3xl mx-auto">
+                    Tiga langkah mudah untuk memulai trading saham dengan analisis kuantitatif
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center animate-slide-up">
+                    <div class="relative mb-8">
+                        <div
+                            class="w-32 h-32 bg-gradient-to-br from-primary to-primary-dark rounded-2xl mx-auto flex items-center justify-center text-white text-4xl font-bold font-space shadow-lg">
+                            1
+                        </div>
+                        <div class="absolute -top-4 -right-4 w-8 h-8 bg-secondary rounded-full"></div>
+                    </div>
+                    <h3
+                        class="text-2xl font-bold text-gray-800 dark:text-white font-space mb-4 transition-colors duration-500">
+                        Pilih Metode Analisis</h3>
+                    <p class="text-gray-600 dark:text-gray-400 transition-colors duration-500 leading-relaxed">
+                        Pilih dari 30+ metode analisis kuantitatif yang sesuai dengan gaya trading atau investasi Anda.
+                    </p>
+                </div>
+
+                <div class="text-center animate-slide-up">
+                    <div class="relative mb-8">
+                        <div
+                            class="w-32 h-32 bg-gradient-to-br from-success-500 to-success-600 rounded-2xl mx-auto flex items-center justify-center text-white text-4xl font-bold font-space shadow-lg">
+                            2
+                        </div>
+                        <div class="absolute -top-4 -right-4 w-8 h-8 bg-secondary rounded-full"></div>
+                    </div>
+                    <h3
+                        class="text-2xl font-bold text-gray-800 dark:text-white font-space mb-4 transition-colors duration-500">
+                        Review Rekomendasi</h3>
+                    <p class="text-gray-600 dark:text-gray-400 transition-colors duration-500 leading-relaxed">
+                        Dapatkan rekomendasi saham dengan data backtest lengkap dan tingkat akurasi yang tinggi.
+                    </p>
+                </div>
+
+                <div class="text-center animate-slide-up">
+                    <div class="relative mb-8">
+                        <div
+                            class="w-32 h-32 bg-gradient-to-br from-secondary to-secondary-dark rounded-2xl mx-auto flex items-center justify-center text-white text-4xl font-bold font-space shadow-lg">
+                            3
+                        </div>
+                        <div class="absolute -top-4 -right-4 w-8 h-8 bg-primary rounded-full"></div>
+                    </div>
+                    <h3
+                        class="text-2xl font-bold text-gray-800 dark:text-white font-space mb-4 transition-colors duration-500">
+                        Execute & Monitor</h3>
+                    <p class="text-gray-600 dark:text-gray-400 transition-colors duration-500 leading-relaxed">
+                        Lakukan transaksi berdasarkan signal dan monitor performa dengan tools yang disediakan.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-white dark:bg-dark-slate-900 transition-colors duration-500" id="app-showcase">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2
+                    class="text-4xl lg:text-5xl font-bold font-space text-gray-800 dark:text-white transition-colors duration-500 mb-6">
+                    Interface Yang Mudah & Powerful
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 transition-colors duration-500 max-w-3xl mx-auto">
+                    Lihat tampilan aplikasi Signal Saham yang user-friendly dan dilengkapi data lengkap
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="screenshot-card animate-slide-up">
+                    <div class="overflow-hidden">
+                        <img src="assets/img/mtp2-portrait.png" alt="Dashboard Utama"
+                            class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-space font-bold text-xl mb-2 text-gray-800 dark:text-white">Dashboard Utama</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Interface yang clean dan mudah dipahami untuk
+                            monitoring portfolio Anda.</p>
+                    </div>
+                </div>
+
+                <div class="screenshot-card animate-slide-up">
+                    <div class="overflow-hidden">
+                        <img src="assets/img/mtp3-portrait.png" alt="Analisis Mendalam"
+                            class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-space font-bold text-xl mb-2 text-gray-800 dark:text-white">Analisis Mendalam
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400">Tools analisis kuantitatif dengan berbagai indikator
+                            dan metode.</p>
+                    </div>
+                </div>
+
+                <div class="screenshot-card animate-slide-up">
+                    <div class="overflow-hidden">
+                        <img src="assets/img/mtp4-portrait.png" alt="Signal & Rekomendasi"
+                            class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-space font-bold text-xl mb-2 text-gray-800 dark:text-white">Signal & Rekomendasi
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400">Rekomendasi real-time berdasarkan analisis data
+                            historis dan pattern.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gray-50 dark:bg-dark-slate-900 transition-colors duration-500" id="testimonials">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2
+                    class="text-4xl lg:text-5xl font-bold font-space text-gray-800 dark:text-white mb-6 transition-colors duration-500">
+                    Apa Kata Pengguna Kami</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto transition-colors duration-500">
+                    Testimonial nyata dari pengguna yang telah merasakan manfaat Signal Saham
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div
+                    class="bg-white rounded-2xl p-8 shadow-lg animate-slide-up dark:bg-dark-slate-800 dark:shadow-xl transition-colors duration-500">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-quote-left text-primary text-2xl mr-4"></i>
+                    </div>
+                    <p class="text-gray-700 text-lg mb-6 italic dark:text-gray-300">
+                        "Dengan Metode TB8 dan Heatmap saya dapat profit 55% dari saham ANTM. Alhamdulillah bisa kasih
+                        uang belanja istri untuk setahun penuh!"
+                    </p>
+                    <div class="flex items-center">
+                        <img src="assets/img/iskandar.png" alt="Iskandar" class="testimonial-img mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800 dark:text-white transition-colors duration-500">Iskandar
+                            </h4>
+                            <span
+                                class="text-gray-600 dark:text-gray-400 transition-colors duration-500">Salatiga</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white rounded-2xl p-8 shadow-lg animate-slide-up dark:bg-dark-slate-800 dark:shadow-xl transition-colors duration-500">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-quote-left text-success text-2xl mr-4"></i>
+                    </div>
+                    <p class="text-gray-700 text-lg mb-6 italic dark:text-gray-300">
+                        "Sebagai pemula, Signal Saham sangat membantu. 2 minggu pertama profit 500rb, akhir bulan total
+                        gain 2.5 juta. Sekarang sudah lewat UMR!"
+                    </p>
+                    <div class="flex items-center">
+                        <img src="assets/img/yulia.png" alt="Yulia" class="testimonial-img mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800 dark:text-white transition-colors duration-500">Yulia
+                            </h4>
+                            <span class="text-gray-600 dark:text-gray-400 transition-colors duration-500">Jakarta</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Courses/Features Gallery Section -->
+    <section class="py-20 bg-gray-50 dark:bg-dark-slate-900 transition-colors duration-500" id="gallery">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2
+                    class="text-4xl lg:text-5xl font-bold font-space text-gray-800 dark:text-white transition-colors duration-500 mb-6">
+                    Fitur & Tools Lengkap</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 transition-colors duration-500 max-w-3xl mx-auto">
+                    Berbagai tools dan fitur untuk mendukung analisis trading Anda
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="screenshot-card animate-slide-up">
+                    <img src="assets/img/courses-1.jpg" alt="Technical Analysis" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-space font-bold text-xl mb-2 text-gray-800 dark:text-white">Technical Analysis
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400">Analisis teknikal mendalam dengan berbagai indikator
+                            trading profesional.</p>
+                    </div>
+                </div>
+
+                <div class="screenshot-card animate-slide-up">
+                    <img src="assets/img/courses-2.jpg" alt="Risk Management" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-space font-bold text-xl mb-2 text-gray-800 dark:text-white">Risk Management</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Tools untuk mengelola risiko dan mengoptimalkan
+                            return investasi.</p>
+                    </div>
+                </div>
+
+                <div class="screenshot-card animate-slide-up">
+                    <img src="assets/img/courses-3.jpg" alt="Portfolio Tracking" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-space font-bold text-xl mb-2 text-gray-800 dark:text-white">Portfolio Tracking
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400">Monitor performa portfolio secara real-time dengan
+                            analisis mendalam.</p>
+                    </div>
+                </div>
+
+                <div class="screenshot-card animate-slide-up">
+                    <img src="assets/img/courses-4.jpg" alt="Market Scanner" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-space font-bold text-xl mb-2 text-gray-800 dark:text-white">Market Scanner</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Scan pasar untuk menemukan peluang trading terbaik
+                            setiap hari.</p>
+                    </div>
+                </div>
+
+                <div class="screenshot-card animate-slide-up">
+                    <img src="assets/img/courses-5.jpg" alt="Backtesting" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-space font-bold text-xl mb-2 text-gray-800 dark:text-white">Backtesting</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Test strategi trading dengan data historis untuk
+                            validasi performa.</p>
+                    </div>
+                </div>
+
+                <div class="screenshot-card animate-slide-up">
+                    <img src="assets/img/courses-6.jpg" alt="Signal Alerts" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-space font-bold text-xl mb-2 text-gray-800 dark:text-white">Signal Alerts</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Dapatkan notifikasi real-time untuk peluang trading
+                            terbaik.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-dark-slate-900 text-white relative overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="assets/img/bg-image.jpg" alt="Background" class="w-full h-full object-cover opacity-20">
+        </div>
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <div class="animate-slide-up">
+                <h2 class="text-4xl lg:text-5xl font-bold font-space mb-6">Siap Meningkatkan Performa Trading Anda?</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto mb-10">
+                    Bergabunglah dengan ribuan trader yang telah merasakan manfaat analisis kuantitatif Signal Saham.
+                    Mulai trial gratis hari ini!
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="https://mtp.signalsaham.com/trial.php"
+                        class="bg-secondary text-white px-8 py-4 rounded-xl font-semibold hover:bg-secondary-dark transition transform hover:scale-105">
+                        <i class="fas fa-rocket mr-2"></i>
+                        Daftar Sekarang
+                    </a>
+                    <a href="https://wa.me/6281802037981?text=Halo%20saya%20tertarik%20dengan%20Signal%20Saham"
+                        class="whatsapp-btn" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                        Chat WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-primary-dark/20 to-primary/20"></div>
+        <div
+            class="hidden sm:block absolute top-10 right-10 w-64 h-64 bg-secondary bg-opacity-20 rounded-full blur-3xl">
+        </div>
+        <div
+            class="hidden sm:block absolute bottom-10 left-10 w-48 h-48 bg-primary bg-opacity-20 rounded-full blur-3xl">
+        </div>
+    </section>
+
+    <footer class="bg-dark-slate-900 text-gray-400 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-line text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white text-lg font-bold font-space">Signal Saham</h3>
+                            <p class="text-xs text-gray-500">Trading Platform</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed">Platform analisis kuantitatif terdepan untuk trading saham
+                        dengan success rate tinggi.</p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Kontak Kami</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt text-secondary mr-3"></i>
+                            <span>Jl. Pramuka No 96 Kuningan</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone text-secondary mr-3"></i>
+                            <span>+62 85759065777</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope text-secondary mr-3"></i>
+                            <span>admin@signalsaham.com</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="hover:text-white transition">Beranda</a></li>
+                        <li><a href="#features" class="hover:text-white transition">Fitur</a></li>
+                        <li><a href="#how-it-works" class="hover:text-white transition">Cara Kerja</a></li>
+                        <li><a href="#testimonials" class="hover:text-white transition">Testimoni</a></li>
+                        <li><a href="#contact" class="hover:text-white transition">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="border-dark-slate-800 my-8">
+
+            <div class="text-center text-sm">
+                <p>&copy; 2025 Signal Saham. All rights reserved. | Designed by Ahmad Fauzi | Distributed by ATENSI
+                    INDONESIA</p>
+            </div>
+        </div>
+    </footer>
+
+    <button id="scrollToTop"
+        class="fixed bottom-6 right-6 bg-secondary text-white p-4 rounded-full shadow-lg hover:bg-secondary-dark transition transform hover:scale-110 opacity-0 invisible">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Theme toggle functionality
+        const checkbox = document.getElementById('checkbox');
+        const html = document.documentElement;
+
+        checkbox.addEventListener('change', function () {
+            if (this.checked) {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            html.classList.add('dark');
+            checkbox.checked = true;
+        } else if (savedTheme === 'light') {
+            html.classList.remove('dark');
+            checkbox.checked = false;
+        }
+
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-slide-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Scroll to top button
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.remove('opacity-0', 'invisible');
+                scrollToTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                scrollToTopBtn.classList.add('opacity-0', 'invisible');
+                scrollToTopBtn.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking on links
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+
+</html>
