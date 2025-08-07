@@ -328,6 +328,12 @@
                 class="block text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-dark transition">Testimoni</a>
             <a href="#contact"
                 class="block text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-dark transition">Kontak</a>
+            <div class="flex justify-center mb-4">
+                <label class="theme-switch" for="mobile-checkbox">
+                    <input type="checkbox" id="mobile-checkbox" />
+                    <div class="slider round"></div>
+                </label>
+            </div>
             <div class="pt-4 border-t border-gray-200 dark:border-dark-slate-800">
                 <a href="https://mtp.signalsaham.com"
                     class="block text-center border border-primary text-primary py-2 px-4 rounded-lg mb-2 hover:bg-primary hover:text-white dark:border-primary-dark dark:text-primary-dark dark:hover:bg-primary-dark dark:hover:text-white transition">Login</a>
@@ -508,7 +514,7 @@
                 <div class="text-center animate-slide-up">
                     <div class="relative mb-8">
                         <div
-                            class="w-32 h-32 bg-gradient-to-br from-success-500 to-success-600 rounded-2xl mx-auto flex items-center justify-center text-white text-4xl font-bold font-space shadow-lg">
+                            class="w-32 h-32 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl mx-auto flex items-center justify-center text-white text-4xl font-bold font-space shadow-lg">
                             2
                         </div>
                         <div class="absolute -top-4 -right-4 w-8 h-8 bg-secondary rounded-full"></div>
@@ -668,8 +674,9 @@
                         <h3 class="font-space font-bold text-xl mb-2 text-gray-800 dark:text-white">Quantitative
                             Analysis
                         </h3>
-                        <p class="text-gray-600 dark:text-gray-400">Analisis teknikal mendalam dengan berbagai indikator
-                            trading profesional.</p>
+                        <p class="text-gray-600 dark:text-gray-400">Analisis Quantitative mendalam dengan berbagai
+                            indikator
+                            trading.</p>
                     </div>
                 </div>
 
@@ -812,28 +819,42 @@
 
     <script>
         // Theme toggle functionality
-        const checkbox = document.getElementById('checkbox');
+        const checkbox = document.getElementById('checkbox'); // toggle desktop
+        const mobileCheckbox = document.getElementById('mobile-checkbox'); // toggle mobile
         const html = document.documentElement;
 
-        checkbox.addEventListener('change', function () {
-            if (this.checked) {
+        // Fungsi untuk set tema dan sinkronisasi checkbox
+        function setTheme(isDark) {
+            if (isDark) {
                 html.classList.add('dark');
                 localStorage.setItem('theme', 'dark');
             } else {
                 html.classList.remove('dark');
                 localStorage.setItem('theme', 'light');
             }
+            // Sinkronkan kedua toggle
+            checkbox.checked = isDark;
+            if (mobileCheckbox) mobileCheckbox.checked = isDark;
+        }
+
+        // Event saat desktop toggle diubah
+        checkbox.addEventListener('change', function () {
+            setTheme(this.checked);
         });
 
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            html.classList.add('dark');
-            checkbox.checked = true;
-        } else if (savedTheme === 'light') {
-            html.classList.remove('dark');
-            checkbox.checked = false;
+        // Event saat mobile toggle diubah (jika ada)
+        if (mobileCheckbox) {
+            mobileCheckbox.addEventListener('change', function () {
+                setTheme(this.checked);
+            });
         }
+
+        // Inisialisasi saat halaman dimuat
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+        setTheme(isDark);
+
 
         // Animation on scroll
         const observerOptions = {
